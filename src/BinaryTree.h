@@ -32,9 +32,24 @@ public:
         return false;
     }
 
+    // https://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion/
+    // used this source as a reference--made a lot of progress on my own but found
+    // it difficult to solve
     std::vector<T> traverseInOrder() override {
-        // homework, to be done iteratively
-
+        std::vector<T> result;
+        LinkedStack<TreeNode<T>*> myStack;
+        TreeNode<T>* curr = root;
+        while (curr != nullptr || !myStack.isEmpty()) {
+            while (curr != nullptr) {
+                myStack.push(curr);
+                curr = curr->left;
+            }
+            curr = myStack.peek();
+            myStack.pop();
+            result.push_back(curr->val);
+            curr = curr->right;
+        }
+        return result;
     }
 
     std::vector<T> traversePreOrder() override {
@@ -43,28 +58,28 @@ public:
 
     std::vector<T> traversePostOrder() override {
         // homework, to be done iteratively
+
+    }
+
+    void DestructorHelper(TreeNode<T>* node) {
+        if (node == nullptr) {
+            return;
+        }
+        DestructorHelper(node->left);
+        DestructorHelper(node->right);
+        delete node;
     }
 
     virtual ~BinaryTree() {
         // homework
-        BinaryTree(root);
-    }
-
-    template<typename T>
-    void BinaryTree(TreeNode<T>* node) {
-        if (node == nullptr) {
-            return;
-        }
-        BinaryTree(node->left);
-        BinaryTree(node->right);
-        delete node;
+        DestructorHelper(root);
     }
 
     T LCA(T node1, T node2) {
         // homework
     }
 
-    bool add(const T &) override {
+    bool add(const T & val) override {
         // not implemented yet
     }
 
