@@ -24,8 +24,7 @@ public:
         // not implemented yet
     }
 
-    BinaryTree(TreeNode<T>* root) : root(root) {
-    }
+    BinaryTree(TreeNode<T>* root) : root(root) {}
 
     bool contains(T val) override {
         // not implemented yet
@@ -56,9 +55,34 @@ public:
         // don't bother
     }
 
+    // https://www.geeksforgeeks.org/iterative-postorder-traversal/
+    // Used this source as reference to write this function
     std::vector<T> traversePostOrder() override {
-        // homework, to be done iteratively
-
+        std::vector<T> result;
+        if (root == nullptr) {
+            return result;
+        }
+        LinkedStack<TreeNode<T>*> myStack;
+        LinkedStack<TreeNode<T>*> myStack2;
+        TreeNode<T>* curr = root;
+        myStack.push(curr);
+        while (!myStack.isEmpty()) {
+            curr = myStack.peek();
+            myStack.pop();
+            myStack2.push(curr);
+            if (curr->left != nullptr) {
+                myStack.push(curr->left);
+            }
+            if (curr->right != nullptr) {
+                myStack.push(curr->right);
+            }
+        }
+        while (!myStack2.isEmpty()) {
+            curr = myStack2.peek();
+            myStack2.pop();
+            result.push_back(curr->val);
+        }
+        return result;
     }
 
     void DestructorHelper(TreeNode<T>* node) {
@@ -71,7 +95,6 @@ public:
     }
 
     virtual ~BinaryTree() {
-        // homework
         DestructorHelper(root);
     }
 
