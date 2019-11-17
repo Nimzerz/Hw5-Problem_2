@@ -32,7 +32,7 @@ public:
     }
 
     // https://www.geeksforgeeks.org/inorder-tree-traversal-without-recursion/
-    // used this source as a reference--made a lot of progress on my own but found
+    // Used this source as a reference--made a lot of progress on my own but found
     // it difficult to solve
     std::vector<T> traverseInOrder() override {
         std::vector<T> result;
@@ -99,7 +99,7 @@ public:
     }
 
     T LCA(T node1, T node2) {
-        // homework
+
     }
 
     bool add(const T & val) override {
