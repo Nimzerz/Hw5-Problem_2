@@ -38,6 +38,7 @@ public:
         std::vector<T> result;
         LinkedStack<TreeNode<T>*> myStack;
         TreeNode<T>* curr = root;
+
         while (curr != nullptr || !myStack.isEmpty()) {
             while (curr != nullptr) {
                 myStack.push(curr);
@@ -62,10 +63,12 @@ public:
         if (root == nullptr) {
             return result;
         }
+
         LinkedStack<TreeNode<T>*> myStack;
         LinkedStack<TreeNode<T>*> myStack2;
-        TreeNode<T>* curr = root;
-        myStack.push(curr);
+        TreeNode<T>* curr;
+        myStack.push(root);
+
         while (!myStack.isEmpty()) {
             curr = myStack.peek();
             myStack.pop();
@@ -77,6 +80,7 @@ public:
                 myStack.push(curr->right);
             }
         }
+
         while (!myStack2.isEmpty()) {
             curr = myStack2.peek();
             myStack2.pop();
@@ -85,21 +89,63 @@ public:
         return result;
     }
 
-    void DestructorHelper(TreeNode<T>* node) {
+    void destructorHelper(TreeNode<T>* node) {
         if (node == nullptr) {
             return;
         }
-        DestructorHelper(node->left);
-        DestructorHelper(node->right);
+
+        // must store left/right nodes so we can access after deleting root
+        TreeNode<T>* left = node->left;
+        TreeNode<T>* right = node->right;
+
         delete node;
+        destructorHelper(left);
+        destructorHelper(right);
     }
 
     virtual ~BinaryTree() {
-        DestructorHelper(root);
+        destructorHelper(root);
     }
 
-    T LCA(T node1, T node2) {
+    // Stores the path to the node containing the value
+    // Wasn't sure if this could be simplified given our assumptions
+    bool findPath(TreeNode<T>* node, std::vector<int> &paths, int n) {
+        if (node == nullptr) {
+            return false;
+        }
+        paths.push_back(node->val);
+        if (node->val == n) {
+            return true;
+        }
+        if (node->left != nullptr && findPath(node->left, paths, n) ||
+            node->right != nullptr && findPath(node->right, paths, n)) {
+            return true;
+        }
+        paths.pop_back();
+        return false;
+    }
 
+    // https://www.geeksforgeeks.org/lowest-common-ancestor-binary-tree-set-1/
+    // This function and the function "findPath" were written with the help of this source.
+    // Compares the paths to the nodes containing the values and returns the first
+    // occurring difference in paths--similar to the method we used in class when
+    // brainstorming ideas on how to solve this problem. Simplified to fit our assumptions.
+    T LCA(T node1, T node2) {
+        std::vector<T> path1; // stores path to node 1
+        std::vector<T> path2; // stores path to node 2
+
+        // no need to check if nodes exist, due to assumptions
+        findPath(root, path1, node1);
+        findPath(root, path2, node2);
+
+        // compares the paths to the nodes
+        int i;
+        for (i = 0; i < path1.size() && i < path2.size(); i++) {
+            if (path1[i] != path2[i]) {
+                break; // break at first occurring difference in paths
+            }
+        }
+        return path1[i - 1];
     }
 
     bool add(const T & val) override {
@@ -113,5 +159,4 @@ public:
     int height() override {
         return height(root);
     }
-
 };

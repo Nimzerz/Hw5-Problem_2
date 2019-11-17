@@ -53,6 +53,9 @@ TEST(tree, Post_Order_Iteratively) {
 }
 
 TEST(tree, Lowest_Common_Ancestor) {
+    /* no need to test empty tree because we are assuming it will contain
+       at least one node */
+
     TreeNode<int>* root = new TreeNode<int>(4);
     root->setLeft(new TreeNode<int>(8));
     root->setRight(new TreeNode<int>(6));
